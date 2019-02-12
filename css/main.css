@@ -4,8 +4,140 @@ body{
 }
 
 #canvas{
-    background: whitesmoke;
     position: fixed;
     left: 0;
     top: 0;
 }
+
+svg.icon {
+    width: 1em; 
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+ }
+
+/*----------------画笔颜色部分----------------*/
+div.tools{
+    display: inline-block;
+    width: 250px;
+    height: 150px;
+    position: fixed;
+}
+
+ul.colors li{
+    position: fixed;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+ul.colors li.black{
+    background-color: rgb(39, 39, 39);
+}
+
+ul.colors li.red{
+    background-color: rgb(233, 81, 81);
+}
+
+ul.colors li.orange{
+    background-color: rgb(240, 158, 92);
+}
+
+ul.colors li.blue{
+    background-color: rgb(44, 124, 230);
+}
+
+
+/*------颜色选择：电脑端------*/
+@media (min-width: 500px) {
+    ul.colors li{
+        width: 30px;
+        height: 30px;
+        top: 20px;
+        border: solid 2px rgba(48, 48, 48, 0.3);
+    }
+    
+    ul.colors li.black{
+        background-color: rgb(39, 39, 39);
+        left: 30px;
+    }
+    ul.colors li.red{
+        background-color: rgb(233, 81, 81);
+        left: 80px;
+    }
+    ul.colors li.orange{
+        background-color: rgb(240, 158, 92);
+        left: 130px;
+    }
+    ul.colors li.blue{
+        background-color: rgb(44, 124, 230);
+        left: 180px;
+    }
+
+    ul.colors li.active{
+        transform: scale(1.5);
+    }
+}
+
+
+
+/*------手机端------*/
+@media (max-width: 500px) {
+    ul.colors li{
+        width: 5px;
+        height: 5px;
+    }
+    
+    ul.colors li.black{
+        background-color: rgb(39, 39, 39);
+    }
+    ul.colors li.red{
+        background-color: rgb(233, 81, 81);
+    }
+    ul.colors li.orange{
+        background-color: rgb(240, 158, 92);
+    }
+    ul.colors li.blue{
+        background-color: rgb(44, 124, 230);
+    }
+}
+/*------------------粗细----------------------*/
+ul.width li{
+    position: absolute;
+    border-radius: 50%;
+}
+
+
+
+
+/*------------------工具栏----------------------*/
+@media (min-width: 500px) {
+    ul.icons li{
+        display: inline-block;
+        position: fixed;
+        font-size: 30px;
+        top: 70px;
+    }
+    
+    ul.icons li.pen{
+        left: 30px;
+    }
+    ul.icons li.eraser{
+        left: 85px;
+    }
+    ul.icons li.clear{
+        left: 183px;
+    }
+    ul.icons li.download{
+        left: 133px;
+    }
+
+}
+
+
+
+
+
+
+
+

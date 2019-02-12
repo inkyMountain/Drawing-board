@@ -3,8 +3,9 @@ canvasAutoFit();
 context.lineWidth = 4;
 var istouchsupported = "ontouchstart" in window;
 var using = false;  //判断是否在使用画板
+var erasing = false;  //判断是否在用橡皮擦
 var points = [];  //存储鼠标运动时，经过的点。
-var dateValues = [];  //存储date对象，原计划用于判断鼠标运动速度。太麻烦了，就没弄了。
+var dateValues = [];  //存储date对象，原计划用于判断鼠标运动速度。太麻烦了，就没弄了。不给自己加需求.jpg
 var moveCount = 0;  //用于计数鼠标移动时产生的点的数量
 var point = function (x, y) {  //定义点对象
     this.x = x;
@@ -21,20 +22,32 @@ var EVENTS = {
 };
 listenPointer(canvas);
 
+var lis = document.querySelectorAll("div.tools ul.colors li");
+for (const li of lis) {
+    li.addEventListener("click", function (event) {
+        changeColor(event);
+    }, true);
+};
+
+var clear = document.querySelector("ul.icons li.clear");
+clear.onclick = (()=>{
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+});
 
 
-
-
-
-//----------------------------函数封装--------------------------------------------------------------------------
-
+/*--------------------------------函数封装----------------------------------------------------*/
+/*--------------------------------函数封装----------------------------------------------------*/
+/*--------------------------------函数封装----------------------------------------------------*/
+/*--------------------------------函数封装----------------------------------------------------*/
+/*--------------------------------函数封装----------------------------------------------------*/
+/*--------------------------------函数封装----------------------------------------------------*/
 /**
  * 监听鼠标或触摸事件，包括down，move，up三种状态。EVENTS对象用于判断设备是否支持触摸。
  * @param {需要监听的目标节点} aim 
  */
 function listenPointer(aim) {
     aim.addEventListener(EVENTS.POINTER_DOWN, (event) => {
-        using = !using;
+        using = true;
         points.push(
         new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
             istouchsupported? event.changedTouches[0].screenY: event.clientY)
@@ -44,7 +57,6 @@ function listenPointer(aim) {
     });
 
     aim.addEventListener(EVENTS.POINTER_MOVE, (event) => {
-        console.log(event);
         if (!using) {return;};
         if (points.length >= 2) {
             points.shift();
@@ -69,11 +81,13 @@ function listenPointer(aim) {
         drawLine(points[0], points[1]);
         drawCircle(points[1], context.lineWidth/2.5);
         console.log(EVENTS.POINTER_UP);
-        using = !using;
+        using = false;
         points = [];
         });
     };
     
+
+
 
 /**
  * 画一条直线
@@ -190,4 +204,32 @@ function calculatepathLength(lastPoint, currentPoint) {  //计算两点之间的
 function speed(fromPoint, toPoint, startValue, endValue) {  //计算两点速度
     return calculatepathLength(fromPoint, toPoint)/(endValue - startValue)*1000;
 }
+
+function erase(point) {
+    context.clearRect(point.x, point.y, 10);
+}
+
+function changeColor(event) {
+    
+    var colors = {
+        black: "rgb(39, 39, 39)",
+        red: "rgb(233, 81, 81)",
+        orange: "rgb(240, 158, 92)",
+        blue: "rgb(44, 124, 230)"
+    };
+    var target = event.target;
+    context.strokeStyle = colors[target.className];  
+    context.fillStyle = colors[target.className];  //颜色改变完成
+
+    var lis = [...document.querySelectorAll("div.tools ul.colors li")];
+    for (const li of lis) {
+        li.classList.remove("active");
+    };
+    var classList = target.classList;
+    classList.add("active");                    //大小改变完成
+}
+
+
+
+
 
