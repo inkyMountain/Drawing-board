@@ -1,6 +1,6 @@
 var context = canvas.getContext("2d");
 canvasAutoFit();
-context.lineWidth = 4;
+context.lineWidth = 7;
 var istouchsupported = "ontouchstart" in window;
 var using = false;  //判断是否在使用画板
 var erasing = false;  //判断是否在用橡皮擦
@@ -22,6 +22,8 @@ var EVENTS = {
 };
 listenPointer(canvas);
 
+
+//添加颜色选择函数
 var lis = document.querySelectorAll("div.tools ul.colors li");
 for (const li of lis) {
     li.addEventListener("click", function (event) {
@@ -29,12 +31,62 @@ for (const li of lis) {
     }, true);
 };
 
-var clear = document.querySelector("ul.icons li.clear");
+//垃圾桶添加清空画板函数
+var clear = document.querySelector("ul.icons li.clear");  
 clear.onclick = (()=>{
     context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 });
 
+//切换橡皮擦
+eraser.onclick = (() => {
+    eraser.classList.add("active");
+    pen.classList.remove("active");
+    erasing = true;
+});
 
+pen.onclick = (() => {
+    pen.classList.add("active");
+    eraser.classList.remove("active");
+    erasing = false;
+});
+//下载按钮添加下载功能
+download.onclick = (() => {
+    context.save();
+    var link = document.createElement("a");
+    link.download = "works.png";
+    var url = canvas.toDataURL("image/png");
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.remove(link);
+    context.restore();
+});
+
+var lisOfWidth = document.querySelectorAll("div.tools ul.width li");
+for (const li of lisOfWidth) {
+    li.onclick = ((event) => {
+        var target = event.target;
+        for (const li of lisOfWidth) {
+            li.classList.remove("active");
+        };
+        var classList = target.classList;
+        console.log(event.target.className);
+        switch (event.target.className) {
+            case "thick":
+            context.lineWidth = 10;
+            break;
+            case "normal":
+            context.lineWidth = 7;
+            break;
+            case "thin":
+            context.lineWidth = 4;
+            break;
+            default:
+            break;
+        }   
+        classList.add("active");
+    })
+};
 /*--------------------------------函数封装----------------------------------------------------*/
 /*--------------------------------函数封装----------------------------------------------------*/
 /*--------------------------------函数封装----------------------------------------------------*/
@@ -48,16 +100,27 @@ clear.onclick = (()=>{
 function listenPointer(aim) {
     aim.addEventListener(EVENTS.POINTER_DOWN, (event) => {
         using = true;
-        points.push(
-        new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
-            istouchsupported? event.changedTouches[0].screenY: event.clientY)
-        );
+        console.log(using);
+        if (erasing) {
+            erase(new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
+                istouchsupported? event.changedTouches[0].screenY: event.clientY));
+            return;
+        };
+        var currentPoint = new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
+            istouchsupported? event.changedTouches[0].screenY: event.clientY);
+        points.push(currentPoint);
+        points.push(currentPoint);  //如果只加一个点，鼠标不移动直接松开，就会数组越界。
         drawCircle(points[0], context.lineWidth/2.5);
         console.log(EVENTS.POINTER_DOWN);
     });
 
     aim.addEventListener(EVENTS.POINTER_MOVE, (event) => {
         if (!using) {return;};
+        if (erasing) {
+            erase(new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
+                istouchsupported? event.changedTouches[0].screenY: event.clientY));
+                return;
+            };
         if (points.length >= 2) {
             points.shift();
         };
@@ -65,15 +128,17 @@ function listenPointer(aim) {
             new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
                 istouchsupported? event.changedTouches[0].screenY: event.clientY)
             );
-            if (context.lineWidth < 5) {
-                drawLine(points[0], points[1]);
-            }else{
-                drawDotLine(points[0], points[1]);
-            };
+        context.lineWidth < 5? drawLine(points[0], points[1]):drawDotLine(points[0], points[1]);
         console.log(EVENTS.POINTER_MOVE);
     });
     aim.addEventListener(EVENTS.POINTER_UP, (event) => {
         if (!using) {
+            return;
+        };
+        if (erasing) {
+            erase(new point(istouchsupported? event.changedTouches[0].screenX: event.clientX,
+                istouchsupported? event.changedTouches[0].screenY: event.clientY));
+                using = false;
             return;
         };
         points[1].x = istouchsupported? event.changedTouches[0]: event.clientX;
@@ -113,7 +178,7 @@ function drawCircle(centerPoint, radius) {
     context.arc(centerPoint.x, centerPoint.y, radius, 0, Math.PI*2, true);
     context.fill();
 }
-/**
+/**已废弃
  * 画一条贝塞尔曲线
  * @param {起始点} fromPoint 
  * @param {参考点1} cpPoint1 
@@ -147,7 +212,7 @@ function drawDotLine(fromPoint, toPoint) {  //把mousemove两个点之间，用�
         drawCircle(midPoints[i], context.lineWidth / 2);
     }
 }
-/**
+/**已废弃
  * 与上个函数类似
  * @param {起始点} fromPoint 
  * @param {终点} toPoint 
@@ -181,7 +246,7 @@ function canvasAutoFit() {
         canvas.height = window.innerHeight;
     }
 }
-/**
+/**已废弃
  * 计算两点之间的直线距离  但是上面没有用到这个函数。
  * @param {起始点} lastPoint 
  * @param {终点} currentPoint 
@@ -194,7 +259,7 @@ function calculatepathLength(lastPoint, currentPoint) {  //计算两点之间的
 }
 
 
-/**
+/**已废弃
  * 计算从一点到另外一点的速度  但是上面没有用到这个函数。
  * @param {起始点} fromPoint 
  * @param {终点} toPoint 
@@ -206,11 +271,10 @@ function speed(fromPoint, toPoint, startValue, endValue) {  //计算两点速度
 }
 
 function erase(point) {
-    context.clearRect(point.x, point.y, 10);
+    context.clearRect(point.x, point.y, context.lineWidth + 2, context.lineWidth + 2);
 }
 
 function changeColor(event) {
-    
     var colors = {
         black: "rgb(39, 39, 39)",
         red: "rgb(233, 81, 81)",

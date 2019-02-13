@@ -21,7 +21,7 @@ svg.icon {
 div.tools{
     display: inline-block;
     width: 250px;
-    height: 150px;
+    height: 200px;
     position: fixed;
 }
 
@@ -49,7 +49,6 @@ ul.colors li.blue{
 
 
 /*------颜色选择：电脑端------*/
-@media (min-width: 500px) {
     ul.colors li{
         width: 30px;
         height: 30px;
@@ -77,46 +76,49 @@ ul.colors li.blue{
     ul.colors li.active{
         transform: scale(1.5);
     }
-}
 
 
-
-/*------手机端------*/
-@media (max-width: 500px) {
-    ul.colors li{
-        width: 5px;
-        height: 5px;
-    }
-    
-    ul.colors li.black{
-        background-color: rgb(39, 39, 39);
-    }
-    ul.colors li.red{
-        background-color: rgb(233, 81, 81);
-    }
-    ul.colors li.orange{
-        background-color: rgb(240, 158, 92);
-    }
-    ul.colors li.blue{
-        background-color: rgb(44, 124, 230);
-    }
-}
 /*------------------粗细----------------------*/
 ul.width li{
-    position: absolute;
+    position: fixed;
     border-radius: 50%;
+    background-color: black;
+    margin: 15px;
+}
+
+ul.width li.thin{
+    width: 4px;
+    height: 4px;
+    left: 25px;
+    top: 120px;
+}
+ul.width li.normal{
+    width: 7px;
+    height: 7px;
+    left: 105px;
+    top: 119px;
+}
+ul.width li.thick{
+    width: 10px;
+    height: 10px;
+    left: 180px;
+    top: 116px;
+}
+
+div.tools ul.width li.active{
+    background-color: red;
 }
 
 
 
 
-/*------------------工具栏----------------------*/
-@media (min-width: 500px) {
+/*------------------工具栏--------------------*/
     ul.icons li{
         display: inline-block;
         position: fixed;
         font-size: 30px;
         top: 70px;
+        transition: all 0.5s;
     }
     
     ul.icons li.pen{
@@ -125,6 +127,11 @@ ul.width li{
     ul.icons li.eraser{
         left: 85px;
     }
+    ul.icons li.active{
+        transform: scale(1.5);
+        color: rgb(206, 94, 94);
+    }
+
     ul.icons li.clear{
         left: 183px;
     }
@@ -132,7 +139,6 @@ ul.width li{
         left: 133px;
     }
 
-}
 
 
 
